@@ -7,11 +7,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"
         integrity="sha512-cuCpFhuSthtmbmQ5JjvU7msRYynRI67jVHsQhTP8RY+H4BC9qa9kQJeHTomV9/QnOWJbDpLFKdbIHtqTomJJug=="
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Interaction.js"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Interaction.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Elements.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Grid.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Navi.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Indizi.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Indizi.js"></script> -->
+
+    <script src="Interaction.js"></script>
+    <script src="Elements.js"></script>
+    <script src="Grid.js"></script>
+    <script src="Navi.js"></script>
+    <script src="Indizi.js"></script>
 
     
     
@@ -21,7 +28,7 @@
 <body>
     
     <center>
-        <h1 id="title">Battaglia Navale Ciao</h1>
+        <h1 id="title">Battaglia Navale</h1>
     </center>
 
 </body>
@@ -68,9 +75,9 @@
 
     function setup() {
 
-        var button = createButton('mostra navi');
-        button.addClass('showNavi');
-        button.position(cnvx, cnvy - 20);
+        var button_Help = createButton('Help');
+        button_Help.addClass('Help');
+        button_Help.position(cnvx, cnvy - 20);
 
         var button_newGame = createButton('new Game');
         button_newGame.addClass('newGame');
@@ -107,14 +114,9 @@
 
 
         //mostra tutte le le navi
-        document.querySelector('.showNavi').addEventListener('touchstart', () => {
-            ShowNavi();
-        });
-        document.querySelector('.showNavi').addEventListener('touchend', ()=>{
-            
-            ShowGrid();
-            ShowElements();
-            
+        document.querySelector('.Help').addEventListener('click', () => {
+            GiveHelp();
+            ShowParts();
         });
 
         //INTERACTIVE PART----------------------------->
@@ -158,6 +160,7 @@
         Numeri_C = [];
         navi = [];
         naviPosizionate = [];
+        ResetNaviToShow();
 
         //finche non riesci a sistemare tutte le navi
         var stop = false;
@@ -218,6 +221,25 @@
             el.show();
         }
 
+        TakeParts();
+
+    }
+
+    function Remove(arr, el) {
+
+        let toRemove_index = null;
+
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == el) {
+                toRemove_index = i;
+            }
+        }
+
+        let aux = arr[arr.length - 1];
+        arr[arr.length - 1] = el;
+        arr[toRemove_index] = aux;
+
+        arr.pop();
     }
 
 </script>

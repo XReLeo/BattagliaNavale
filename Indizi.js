@@ -20,6 +20,7 @@ function addIndizi() {
                     if (grid[i][j].x == part.x && grid[i][j].y == part.y) {
                         grid[i][j].conteine_indizio = true;
                         nave_selected.indizio = true;
+                        part.indizio = true;
                     }
 
                 }
@@ -56,3 +57,37 @@ function ShowIndizi() {
     }
 
 }//end function
+
+const AllParts = [];
+const NaviToShow = [];
+
+function TakeParts(){
+
+    for(let nave of naviPosizionate){
+        for(let part of nave.parts){
+            if(part.indizio == false) AllParts.push(part);
+        }
+    }
+}
+
+function GiveHelp(){
+
+    if(AllParts.length > 0){
+
+        let n1 = floor(random(AllParts.length));
+        let partToShow = AllParts[n1];
+
+        partToShow.indizio = true;
+        NaviToShow.push(partToShow);
+        Remove(AllParts, partToShow);
+    }
+}
+
+function ResetNaviToShow(){
+
+    while(NaviToShow.length > 0){
+        part = NaviToShow.pop();
+        part.indizio = false;
+        
+    }
+}

@@ -36,7 +36,7 @@ PosizioniPossibili = [];//vettore contenente le posizioni possibili in cui puo e
 
 //posto possibile in cui puo essere collocata una nave
 function PostoPossibile(cella_iniz) {
-    this.celle = [];//constiene le celle che possono essere occupate da una nave
+    this.celle = [];//contiene le celle che possono essere occupate da una nave
     this.cella_iniz = cella_iniz;
 }
 

@@ -5,27 +5,110 @@ var due = 3;//navi da 2
 var tre = 2;//navi da 3
 var quattro = 1;//navi da 4
 
-function Nave(dim, dir) {
+class Nave {
 
-    this.dim = dim;//dimensione della nave
-    this.dir = dir;//direzione della nave: 0 = orizzontale, 1 = verticale
-    this.parts = [];
-    this.indizio = false;
+    constructor(dim, dir){
+
+        this.dim = dim;//dimensione della nave
+        this.dir = dir;//direzione della nave: 0 = orizzontale, 1 = verticale
+        this.parts = [];
+        this.indizio = false;
+        this.color  = null;
+
+    }
 
 }
 
 //parti di una nave
-function Part(dim, dir) {
+class Part {
 
-    this.x = null;
-    this.y = null;
-    this.dim = dim;
-    this.dir = dir;
-    this.indizio = false;
+    constructor(dim, dir, pos){
+
+        this.x = null;
+        this.y = null;
+        this.dim = dim;//dimensione della nave a cui appartiene
+        this.dir = dir;
+        this.pos = pos;
+        this.indizio = false;
+    }
+
+    show(){
+
+        var x = side_length;
+        var y = side_length;
+
+        push();
+
+        fill(0)
+        if(this.indizio) fill(0, 200, 50);
+
+        if (this.dim > 1) {
+
+            if (this.dir == 0) {
+
+                var x_part = this.x + extra + x;
+                var y_part = this.y + extra + y;
+
+                if (this.pos == 0) {
+    
+                    noStroke();
+                    rect(x_part, y_part, side_length - 2 * extra, side_length - 2 * extra, 0, rounded, rounded, 0);
+
+                }
+                if (this.pos > 0 && this.pos < this.dim - 1) {
+    
+                    noStroke();
+                    rect(x_part, y_part, side_length - 2 * extra, side_length - 2 * extra);
+                }
+                if (this.pos == this.dim - 1) {
+    
+                    noStroke();
+                    rect(x_part, y_part, side_length - 2 * extra, side_length - 2 * extra, rounded, 0, 0, rounded);
+                }
+                
+
+            }
+            else if (this.dir == 1) {
+
+                
+
+                var x_part = this.x + extra + x;
+                var y_part = this.y + extra + y;
+
+                if (this.pos == 0) {
+    
+                    noStroke();
+                    rect(x_part, y_part, side_length - 2 * extra, side_length - 2 * extra, 0, 0, rounded, rounded);
+                }
+                if (this.pos > 0 && this.pos < this.dim - 1) {
+    
+                    noStroke();
+                    rect(x_part, y_part, side_length - 2 * extra, side_length - 2 * extra);
+                }
+                if (this.pos == this.dim - 1) {
+    
+                    noStroke();
+                    rect(x_part, y_part, side_length - 2 * extra, side_length - 2 * extra, rounded, rounded, 0, 0);
+                }
+                
+
+            }
+
+        }
+        else if (this.dim == 1) {
+
+            var x_part = this.x + extra_for_circle + x;
+            var y_part = this.y + extra_for_circle + y;
+
+            ellipse(x_part, y_part, r);
+        }
+
+        pop();
+    }
 
 }
 
-var navi = [];
+var navi = [];//parte dalle navi da 1 fino a quelle da 4 (in navi[0] ci sono le navi da 1 e cosi via)
 var naviPosizionate = [];
 
 var numeri = [uno, due, tre, quattro];
@@ -34,7 +117,7 @@ function addParts(nave) {
 
     for (let i = 0; i < nave.dim; i++) {
 
-        nave.parts.push(new Part(nave.dim, nave.dir));
+        nave.parts.push(new Part(nave.dim, nave.dir, i));
     }
 
 }
@@ -47,6 +130,12 @@ function creaNavi() {
         navi[i] = [];
         for (let j = 0; j < numeri[i]; j++) {
             var dir = round(random());
+            if(i == numeri.length - 1){
+                dir = 0;
+                if (navi[numeri.length - 2][0].dir == 0) {
+                    dir = 1;
+                }
+            }
             var nave = new Nave(dim, dir);
             addParts(nave);
             navi[i][j] = nave;
@@ -90,7 +179,6 @@ function PosizionaNave(index_i, index_j) {
                     if (grid[r - i][c - 1] != undefined) {
 
                         grid[r - i][c - 1].filled = true;
-                        //grid[r - i][c - 1].color = 100;
                     }
                 }
             }
@@ -99,12 +187,10 @@ function PosizionaNave(index_i, index_j) {
 
                 if (grid[r - 1] != undefined) {
                     grid[r - 1][index_x].filled = true;
-                    //grid[r - 1][index_x].color = 100;
                 }
 
                 if (grid[r + 1] != undefined) {
                     grid[r + 1][index_x].filled = true;
-                    //grid[r + 1][index_x].color = 100;
                 }
 
             }
@@ -117,7 +203,6 @@ function PosizionaNave(index_i, index_j) {
                     if (grid[r - i][c + nave.dim] != undefined) {
 
                         grid[r - i][c + nave.dim].filled = true;
-                        //grid[r - i][c + nave.dim].color = 100;
                     }
                 }
             }
@@ -130,7 +215,6 @@ function PosizionaNave(index_i, index_j) {
                 if (grid[r - 1] != undefined) {
                     if (grid[r - 1][c + i] != undefined) {
                         grid[r - 1][c + i].filled = true;
-                        //grid[r - 1][c + i].color = 100;
                     }
                 }
             }
@@ -140,12 +224,10 @@ function PosizionaNave(index_i, index_j) {
 
                 if (grid[index_y][c - 1] != undefined) {
                     grid[index_y][c - 1].filled = true;
-                    //grid[index_y][c - 1].color = 100;
                 }
 
                 if (grid[index_y][c + 1] != undefined) {
                     grid[index_y][c + 1].filled = true;
-                    //grid[index_y][c + 1].color = 100;
                 }
 
             }
@@ -154,7 +236,6 @@ function PosizionaNave(index_i, index_j) {
                 if (grid[r + nave.dim] != undefined) {
                     if (grid[r + nave.dim][c + i] != undefined) {
                         grid[r + nave.dim][c + i].filled = true;
-                        //grid[r + nave.dim][c + i].color = 100;
                     }
                 }
             }
@@ -249,3 +330,12 @@ function ShowNavi() {
     }
 
 }//end function
+
+function ShowParts(){
+
+    if(NaviToShow.length > 0){
+        for (let part of NaviToShow) {
+            part.show();
+        }
+    }
+}
