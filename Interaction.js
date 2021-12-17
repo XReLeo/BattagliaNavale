@@ -29,12 +29,13 @@ function CheckGrid() {
 
                     if (distance(cellX, cellY, x, y) < side_length / 2 && !el.used) {
                         let previousEl = cell.element;
-                        if (previousEl) previousEl.used = false;
-                        cell.element = el;
+                        if (previousEl) Elements[previousEl].used = false;
+                        cell.element = el.index;
                         cell.type = selected_element;
                         cell.rotation = el.rotation;
                         el.used = true;
                         savedCell = cell;
+                        console.log(cell);
                         break;
                     }
                 }
@@ -100,7 +101,7 @@ function RemoveElement() {
 
                 if (distance(cellX, cellY, x, y) < side_length / 2 && cell.element != null) {
 
-                    el = cell.element;
+                    el = Elements[cell.element];
                     cell.element = null;
                     cell.type = null;
                     cell.rotation = null;

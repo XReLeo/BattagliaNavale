@@ -1,18 +1,18 @@
 //GRIGLIA----------------------------->
 
 var grid = [];//array della griglia : matrice di Celle
-function Cella(x, y) {
+function Cella(x, y, filled, color, contiene_indizio, element, type, rotation) {
 
     this.x = x;
     this.y = y;
     this.centerX = x + side_length / 2;
     this.centerY = y + side_length / 2;
-    this.filled = false;//diventa true se vi e presente la parte di una nave
-    this.color = 255;//diventa 0 se vi si trova una nave
-    this.conteine_indizio = false;//diventa true se contiene la parte di una nave da usare come indizio
-    this.element = null;
-    this.type = null;
-    this.rotation = null;
+    this.filled = filled;//diventa true se vi e presente la parte di una nave
+    this.color = color;//diventa 0 se vi si trova una nave
+    this.conteine_indizio = contiene_indizio;//diventa true se contiene la parte di una nave da usare come indizio
+    this.element = element;
+    this.type = type;
+    this.rotation = rotation;
 }
 
 //NB: grid[riga][colonna] dove Y indica la riga e X la colonne
@@ -25,7 +25,26 @@ function CreateGrid() {
         for (let j = 0; j < cols; j++) {
             var x = j * side_length;
             var y = i * side_length;
-            var cella = new Cella(x, y);//crea una nuova cella
+            var cella = new Cella(x, y, false, 255, false, null, null, null);//crea una nuova cella
+            grid[i][j] = cella;//aggiungi una cella alla griglia
+        }
+    }
+}
+
+function CreateGrid_from_data(grid_from_data) {
+    for (let i = 0; i < rows; i++) {
+        grid[i] = [];
+        for (let j = 0; j < cols; j++) {
+            var x = j * side_length;
+            var y = i * side_length;
+            let filled = grid_from_data[i][j].filled;
+            let color = grid_from_data[i][j].color;
+            let contiene_indizio = grid_from_data[i][j].contiene_indizio;
+            let element = grid_from_data[i][j].element;
+            let type = grid_from_data[i][j].type;
+            let rotation = grid_from_data[i][j].rotation;
+
+            var cella = new Cella(x, y, filled, color, contiene_indizio, element, type, rotation);//crea una nuova cella
             grid[i][j] = cella;//aggiungi una cella alla griglia
         }
     }

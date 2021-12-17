@@ -3,10 +3,11 @@
 var Elements = [];
 
 class Element {
-    constructor(x, y) {
+    constructor(x, y, used, index) {
         this.x = x;
         this.y = y;
-        this.used = false;
+        this.index = index;
+        this.used = used;
         this.selected = false;
         this.circle = false;
         this.rounded = false;
@@ -80,7 +81,7 @@ class Element {
     }
 }
 
-function CreateElements() {
+function CreateElements(ele_from_data) {
 
     Elements = [];
 
@@ -88,7 +89,7 @@ function CreateElements() {
     let dist_y = 1.1 * side_length;
 
     let dim = 0;
-
+    let index_el = 0;
     for (let i = 0; i < numeri.length; i++) {
         dim++;
         for (let j = 0; j < numeri[i]; j++) {
@@ -97,13 +98,17 @@ function CreateElements() {
             const y_iniz = cnvy + (N) * side_length + (dim - 1) * dist_y;
 
             if (dim > 1) {
-
                 for (let k = 0; k < dim; k++) {
 
                     var x_part = x_iniz + k * 0.9 * side_length;
                     var y_part = y_iniz;
 
-                    let ele = new Element(x_part, y_part);
+                    let ele = null;
+                    if (ele_from_data) {
+                        ele = new Element(x_part, y_part, ele_from_data[index_el], index_el);
+                    } else {
+                        ele = new Element(x_part, y_part, false, index_el);
+                    }
 
                     if (k == 0) {
 
@@ -123,19 +128,25 @@ function CreateElements() {
                     }
 
                     Elements.push(ele);
+                    index_el++;
 
                 }
 
             }
             else if (dim == 1) {
-
                 var x_part = x_iniz;
                 var y_part = y_iniz;
 
-                let ele = new Element(x_part, y_part);
+                let ele = null;
+                if (ele_from_data) {
+                    ele = new Element(x_part, y_part, ele_from_data[index_el], index_el);
+                } else {
+                    ele = new Element(x_part, y_part, false, index_el);
+                }
                 ele.circle = true;
 
                 Elements.push(ele);
+                index_el++;
 
             }
 
@@ -184,7 +195,7 @@ function ShowElements() {
         for (let j = 0; j < N; j++) {
 
             let cell = grid[i][j];
-            if (cell.element) {
+            if (cell.element != null) {
 
                 if (cell.type == 'rounded_rect') {
 

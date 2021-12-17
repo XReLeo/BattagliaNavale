@@ -8,17 +8,17 @@
         integrity="sha512-cuCpFhuSthtmbmQ5JjvU7msRYynRI67jVHsQhTP8RY+H4BC9qa9kQJeHTomV9/QnOWJbDpLFKdbIHtqTomJJug=="
         crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Interaction.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Interaction.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Elements.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Grid.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Navi.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Indizi.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/XReLeo/BattagliaNavale/Indizi.js"></script> -->
 
-    <!-- <script src="Interaction.js"></script>
-    <script src="Elements.js"></script>
-    <script src="Grid.js"></script>
-    <script src="Navi.js"></script>
-    <script src="Indizi.js"></script> -->
+    <script src="BattleShip/Interaction"></script>
+    <script src="BattleShip/Elements"></script>
+    <script src="BattleShip/Grid"></script>
+    <script src="BattleShip/Navi"></script>
+    <script src="BattleShip/Indizi"></script>
 
     
     
@@ -98,7 +98,24 @@
         RotateButton = new ButtonRotate(7/8 * width, 5.5 / 8 * height, buttonSize)
         RemoveButton = new ButtonRubbish(7 / 8 * width, RotateButton.y + 4/3 * buttonSize, buttonSize)
 
-        CreateGame();
+        //asyncronous part
+        get_data()
+            .then(() => {
+
+                if (!(to_load_data.grid && to_load_data.naviPosizionate && to_load_data.elements)) {
+
+                    CreateGame();
+                    RemoveButton.show();
+                    RotateButton.show();
+                }
+                else {
+                    CreateGame_from_data(to_load_data);
+                    RemoveButton.show();
+                    RotateButton.show();
+                }
+
+            });
+
         //mostra tutte la navi che è possibile inserire
         RotateButton.show();
         RemoveButton.show();
@@ -117,6 +134,7 @@
         document.querySelector('.Help').addEventListener('click', () => {
             GiveHelp();
             ShowParts();
+            send_data();
         });
 
         //INTERACTIVE PART----------------------------->
@@ -225,6 +243,39 @@
 
     }
 
+function CreateGame_from_data() {
+
+        GAME = true;
+        console.log('in create game from data');
+
+        background(back_color);
+        grid = to_load_data.grid;
+        Numeri_R = [];
+        Numeri_C = [];
+        naviPosizionate = to_load_data.naviPosizionate;
+
+        //mostra la griglia vuota
+        ShowGrid();
+
+        //conta per ogni riga e ogni colonna il numero di celle nere presenti
+        ContaCelleNere();
+        //mostrali nel posto corretto
+        ShowNumeri();
+        //mostra gli indizi
+        ShowIndizi();
+
+        //crea gli elementi da inserire
+        CreateElements(to_load_data.elements);
+        //mostra gli elementi
+        for (el of Elements) {
+            el.show();
+        }
+
+        TakeParts();
+        ShowElements();
+
+    }
+
     function Remove(arr, el) {
 
         let toRemove_index = null;
@@ -240,6 +291,48 @@
         arr[toRemove_index] = aux;
 
         arr.pop();
+    }
+
+    async function get_data() {
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        };
+        const path = window.location.href + '/get_data'
+        const res = await fetch(path, options);
+        to_load_data = await res.json()
+
+        console.log(to_load_data);
+    }
+
+    async function send_data() {
+
+        elements = [];
+        for(let el of Elements){
+            elements.push(el.used);
+        }
+
+        grid_for_json = {
+            grid: grid,
+            naviPosizionate: naviPosizionate, 
+            elements: elements
+        }
+
+        console.log(grid_for_json)
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(grid_for_json)
+        };
+
+        const path = window.location.href + '/data'
+        const res2 = await fetch(path, options);
     }
 
 </script>
